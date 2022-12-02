@@ -1,0 +1,43 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.7.3'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+}
+
+group = 'com.github'
+version = '0.0.1'
+sourceCompatibility = '8'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+allprojects {
+    repositories {
+        maven {
+            url 'https://maven.aliyun.com/repository/public/'
+        }
+        mavenLocal()
+        mavenCentral()
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    implementation 'mysql:mysql-connector-java:8.0.26'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor 'org.projectlombok:lombok'
+    implementation 'org.yaml:snakeyaml:1.33'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'com.baomidou:mybatis-plus-boot-starter:3.5.2'
+    implementation 'org.apache.shardingsphere:shardingsphere-jdbc-core-spring-boot-starter:5.2.1'
+}
+
+test {
+    useJUnitPlatform()
+}

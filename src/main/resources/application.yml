@@ -1,0 +1,53 @@
+spring:
+  application:
+    name: sharding-jdbc-demo # 应用名称
+  shardingsphere:
+    mode:
+      type: Standalone # 单机模式
+      repository:
+        type: JDBC # JDBC
+    datasource:
+      names: m1,s1,s2
+      m1: # 配置第一个主机
+        type: com.zaxxer.hikari.HikariDataSource
+        driverClassName: com.mysql.cj.jdbc.Driver
+        jdbcUrl: jdbc:mysql://192.168.68.100:3306/dbtest?serverTimezone=UTC&useSSL=false&useUnicode=true&characterEncoding=UTF-8
+        username: root
+        password: 123456
+      s1: # 配置第一个从机
+        type: com.zaxxer.hikari.HikariDataSource
+        driverClassName: com.mysql.cj.jdbc.Driver
+        jdbcUrl: jdbc:mysql://192.168.68.100:3307/dbtest?serverTimezone=UTC&useSSL=false&useUnicode=true&characterEncoding=UTF-8
+        username: root
+        password: 123456
+      s2: # 配置第二个从机
+        type: com.zaxxer.hikari.HikariDataSource
+        driverClassName: com.mysql.cj.jdbc.Driver
+        jdbcUrl: jdbc:mysql://192.168.68.100:3309/dbtest?serverTimezone=UTC&useSSL=false&useUnicode=true&characterEncoding=UTF-8
+        username: root
+        password: 123456
+    props:
+      sql-show: true # 打印 SQL
+    rules:
+      readwrite-splitting:
+        data-sources:
+          readwrite_ds: # 读写分离逻辑数据源名称
+            staticStrategy: # 读写分离类型为静态读写分离
+              writeDataSourceName: m1 # 写库的数据源
+              readDataSourceNames: # 从库的数据源
+                - s1
+                - s2
+            loadBalancerName: round_robin # 负责均衡算法的名称
+        load-balancers:
+          round_robin:
+            type: ROUND_ROBIN # 负载均衡算法
+
+# mybatis-plus 配置
+mybatis-plus:
+  global-config:
+    db-config:
+      id-type: assign_id  # 主键生成策略
+      table-underline: true
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl   # 开启日志输出
+    map-underscore-to-camel-case: true # 开启驼峰功能
